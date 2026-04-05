@@ -1,61 +1,63 @@
-import { useEffect,  useState } from 'react';
-// import { IWeatherData } from './types/weather';
+import { useEffect, useState } from 'react';
+import type { IWeatherData } from './types/weather';
+import { CitySelector } from './components/CitySelector';
+import { CurrentWeather } from './components/CurrentWeather';
 import './App.css';
 
-const MY_API_KEY:string = '5cac5f7d03be496d1151674570df302b';
-const CITY_NAME:string[] = ['Novosibirsk', 'Moscow', 'Kemerovo', 'Tokyo'];
+const CITIES = [
+  { id: 'Novosibirsk', ru: 'Новосибирск' },
+  { id: 'Moscow', ru: 'Москва' },
+  { id: 'Kemerovo', ru: 'Кемерово' },
+  { id: 'Tokyo', ru: 'Токио' }
+];
+const MY_API_KEY = '5cac5f7d03be496d1151674570df302b';
+const THREE_HOURS = 3 * 60 * 60 * 1000;
 
 function App() {
-  const [data, setData] = useState<any>();
-  const [activeCity, setActiveCity] = useState(CITY_NAME[0]);
+  const [data, setData] = useState<IWeatherData | null>(null);
+  const [activeCity, setActiveCity] = useState(CITIES[0].id);
   const [loading, setLoading] = useState(false);
-   
+
+  const activeCityRu = CITIES.find(city => city.id === activeCity)?.ru;
+
   useEffect(() => {
-    const getWeatherData =  async() => {
+    const getWeatherData = async () => {
       setLoading(true);
       try {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${activeCity}&appid=${MY_API_KEY}&units=metric&lang=ru`);
-        const json = await response.json();
+        const json: IWeatherData = await response.json();
         setData(json);
-        console.log(json);
-      } catch(error) {
-        console.error("Error making request", error);
+      } catch (error) {
+        console.error("Error", error);
       } finally {
         setLoading(false);
       }
     };
+
     getWeatherData();
+    const intervalId = setInterval(getWeatherData, THREE_HOURS);
+    return () => clearInterval(intervalId);
   }, [activeCity]);
-  
-  return(
+
+  return (
     <div className='App'>
-      <p className='header'>Weather in your city</p>
-        <div className='citySelector'> 
-          {CITY_NAME.map((cityName) => (
-            <button key={cityName} 
-            className={activeCity === cityName ? 'active-btn' : 'none-active-btn'}
-            onClick={() => setActiveCity(cityName)}
-            >
-              {cityName}
-            </button>
-          ))}
-        </div>
-        
-        <hr className='line-separator'/>
+      <p className='header'>Погода в вашем городе</p>
+      
+      <CitySelector 
+        cities={CITIES} 
+        activeCity={activeCity} 
+        onSelect={setActiveCity} 
+      />
+      
+      <hr className='line-separator' />
 
       {loading ? (
-        <p>Downloading data in {activeCity}</p>
+        <p>Загрузка погоды для города {activeCityRu}...</p>
       ) : (
-        data && (
-        <div className='Object-city'>
-          <p>City: {data.name}</p>
-          <p>Temp: {data.main.temp}</p>
-          <p>Outside: {data.weather[0].description}</p>
-        </div>
-      )
+        data && <CurrentWeather data={data} cityNameRu={activeCityRu} />
       )}
     </div>
   );
 }
 
-export default App
+export default App;
