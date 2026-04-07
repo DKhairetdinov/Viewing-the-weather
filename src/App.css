@@ -33,3 +33,75 @@
   color: white;
   
 }
+
+.forecast-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 20px;
+}
+
+.forecast-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.forecast-temp {
+  font-weight: bold;
+}
+
+.App {
+  min-height: 100vh;
+  transition: background 0.8s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  padding: 20px;
+}
+
+/* ТЕМЫ */
+.theme-default {
+  background: linear-gradient(180deg, #4E7DF3 0%, #6A91F5 100%);
+}
+
+.theme-sunny {
+  background: linear-gradient(180deg, #f7b733 0%, #fc4a1a 100%);
+}
+
+.theme-cloudy {
+  background: linear-gradient(180deg, #606c88 0%, #3f4c6b 100%);
+}
+
+.theme-rainy {
+  background: linear-gradient(180deg, #203a43 0%, #2c5364 100%);
+}
+
+.theme-snowy {
+  background: linear-gradient(180deg, #83a4d4 0%, #b6fbff 100%);
+}
+
+.theme-stormy {
+  background: linear-gradient(180deg, #0f2027 0%, #203a43 100%)
+}
+
+
+.header {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+
+.line-separator {
+  width: 100%;
+  max-width: 400px;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin: 20px 0;
+}
